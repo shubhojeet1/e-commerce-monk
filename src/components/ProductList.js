@@ -1,10 +1,36 @@
 // src/components/ProductList.js
-import React from 'react';
+import React, { useState } from 'react';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import ProductItem from './ProductItem';
-import AddProductButton from './AddProductButton';
+import ProductPicker from './ProductPicker';
 
 const ProductList = ({ products, setProducts }) => {
+    const [isPickerOpen, setPickerOpen] = useState(false);
+    const [currentProductIndex, setCurrentProductIndex] = useState(null); 
+
+    const handleAddPlaceholderProduct = () => {
+        const newPlaceholderProduct = {
+            id: Date.now(),
+            title: 'Select Product',
+            variants: [],
+            isPlaceholder: true 
+        };
+        setProducts([...products, newPlaceholderProduct]);
+    };
+
+    const handleSelectProductClick = (index) => {
+        setCurrentProductIndex(index);
+        setPickerOpen(true);
+    };
+
+    const handleAddNewProduct = (selectedProducts) => {
+        const newProductsList = [...products];
+        newProductsList.splice(currentProductIndex, 1, ...selectedProducts);
+        setProducts(newProductsList);
+        setPickerOpen(false);
+        setCurrentProductIndex(null);
+    };
+
     const handleDragEnd = (result) => {
         if (!result.destination) return;
 
@@ -15,12 +41,6 @@ const ProductList = ({ products, setProducts }) => {
         setProducts(reorderedProducts);
     };
 
-    const handleUpdateProducts = (updatedProducts, index) => {
-        const newProductsList = [...products];
-        newProductsList.splice(index, 1, ...updatedProducts);
-        setProducts(newProductsList);
-    };
-
     const handleRemoveProduct = (index) => {
         const newProductsList = [...products];
         newProductsList.splice(index, 1);
@@ -28,7 +48,18 @@ const ProductList = ({ products, setProducts }) => {
     };
 
     return (
-        <div>
+        <div className="product-list">
+            {/* Add Product Button */}
+            <button className="add-product-button" onClick={handleAddPlaceholderProduct}>Add Product</button>
+
+            {/* ProductPicker Modal for selecting a product */}
+            {isPickerOpen && (
+                <ProductPicker
+                    setPickerOpen={setPickerOpen}
+                    onSelectProducts={handleAddNewProduct}
+                />
+            )}
+
             <DragDropContext onDragEnd={handleDragEnd}>
                 <Droppable droppableId="products">
                     {(provided) => (
@@ -43,11 +74,13 @@ const ProductList = ({ products, setProducts }) => {
                                         >
                                             <ProductItem
                                                 product={product}
+                                                index={index}
                                                 onUpdateProducts={(updatedProducts) =>
-                                                    handleUpdateProducts(updatedProducts, index)
+                                                    handleAddNewProduct(updatedProducts)
                                                 }
                                                 onRemove={() => handleRemoveProduct(index)}
-                                                isRemovable={products.length > 1} // Show "x" only if more than one product
+                                                isRemovable={products.length > 1}
+                                                onSelectProductClick={() => handleSelectProductClick(index)}
                                             />
                                         </div>
                                     )}
@@ -58,7 +91,6 @@ const ProductList = ({ products, setProducts }) => {
                     )}
                 </Droppable>
             </DragDropContext>
-            <AddProductButton setProducts={setProducts} />
         </div>
     );
 };

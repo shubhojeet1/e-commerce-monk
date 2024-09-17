@@ -1,21 +1,277 @@
-/* src/App.css */
+/* Global Styles */
+body {
+  font-family: 'Arial', sans-serif;
+  background-color: #f4f4f9;
+  margin: 0;
+  padding: 20px;
+}
+
+h1 {
+  text-align: center;
+  color: #333;
+  font-size: 28px;
+  margin-bottom: 20px;
+}
+
+/* Product List Styles */
+.product-list {
+  max-width: 800px;
+  margin: 20px auto;
+  background-color: #fff;
+  border-radius: 12px;
+  padding: 25px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Product Item Styles */
 .product-item {
-  border: 1px solid #ccc;
-  padding: 10px;
-  margin: 10px 0;
+  background-color: #fdfdfd;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease-in-out;
 }
 
+.product-item:hover {
+  transform: translateY(-5px);
+}
+
+.product-item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.product-actions {
+  display: flex;
+  gap: 15px; /* Increase the gap to add space between buttons */
+}
+
+/* Button Styles */
+button {
+  padding: 8px 12px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  margin: 0; /* Reset margin to avoid extra spacing */
+}
+
+
+button:focus {
+  outline: none;
+  box-shadow: 0 0 0 4px rgba(0, 123, 255, 0.25);
+}
+
+button.edit-button {
+  background-color: #007bff;
+  color: #fff;
+}
+
+button.edit-button:hover {
+  background-color: #0056b3;
+}
+
+button.delete-button {
+  background-color: #dc3545;
+  color: #fff;
+}
+
+button.delete-button:hover {
+  background-color: #c82333;
+}
+
+button.add-product-button {
+  display: block;
+  width: 100%;
+  text-align: center;
+  padding: 12px;
+  margin-top: 20px;
+  background-color: #28a745;
+  color: white;
+  font-weight: bold;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+button.add-product-button:hover {
+  background-color: #218838;
+  transform: scale(1.02);
+}
+
+button.toggle-variants-button {
+  background-color: #6c757d;
+  color: #fff;
+}
+
+button.toggle-variants-button:hover {
+  background-color: #5a6268;
+}
+
+/* Discount Section Styles */
 .discount-section {
-  margin: 10px 0;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-top: 15px;
 }
 
+/* Input Styles */
+input[type="number"],
+select {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 14px;
+  width: 150px;
+  transition: border-color 0.3s ease;
+}
+
+input[type="number"]:focus,
+select:focus {
+  border-color: #007bff;
+}
+
+/* Variant List Styles */
 .variant-list {
-  margin-top: 10px;
+  margin-top: 15px;
   padding-left: 20px;
+  border-top: 1px solid #ddd;
+  padding-top: 10px;
 }
 
 .variant-item {
-  border: 1px solid #ddd;
-  padding: 5px;
-  margin: 5px 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px;
+  margin-top: 10px;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Modal Styles */
+.modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 90%;
+  max-width: 600px;
+  background-color: #fff;
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  z-index: 1000;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 15px;
+  margin-bottom: 20px;
+}
+
+.modal-body {
+  margin-top: 20px;
+}
+
+.modal-body input[type="text"] {
+  width: 95%;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  border: 1px solid red;
+  font-size: 14px;
+  margin-bottom: 20px;
+  transition: border-color 0.3s ease;
+}
+
+.modal-body input[type="text"]:focus {
+  border-color: #007bff;
+}
+
+/* Product List in Modal */
+.product-list-modal {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.product-item-modal {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  margin-bottom: 10px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease;
+}
+
+.product-item-modal:hover {
+  transform: translateY(-3px);
+}
+
+.product-item-modal input[type="checkbox"] {
+  margin-right: 15px;
+  cursor: pointer;
+}
+
+.product-item-modal span {
+  font-size: 16px;
+  color: #333;
+}
+
+/* Modal Footer */
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.modal-footer button {
+  padding: 10px 20px;
+  font-size: 14px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.modal-footer .confirm-button {
+  background-color: #28a745;
+  color: #fff;
+}
+
+.modal-footer .confirm-button:hover {
+  background-color: #218838;
+}
+
+.modal-footer .close-button {
+  background-color: #dc3545;
+  color: #fff;
+}
+
+.modal-footer .close-button:hover {
+  background-color: #c82333;
+}
+
+/* Overlay */
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 999;
 }
