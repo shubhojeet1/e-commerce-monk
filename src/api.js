@@ -1,7 +1,7 @@
 import axios from 'axios';
 
-const API_KEY = '72njgfa948d9aS7gs5'; // Replace with the API key shared via email
-const BASE_URL = 'https://stageapi.monkcommerce.app/task/products/search';
+const API_KEY = process.env.REACT_APP_API_KEY; 
+const BASE_URL = process.env.BASE_URL;
 
 export const fetchProducts = async (search = '', page = 0, limit = 10) => {
   try {

@@ -33,9 +33,9 @@ h1 {
   transition: transform 0.2s ease-in-out;
 }
 
-.product-item:hover {
+/* .product-item:hover {
   transform: translateY(-5px);
-}
+} */
 
 .product-item-header {
   display: flex;
@@ -46,7 +46,7 @@ h1 {
 
 .product-actions {
   display: flex;
-  gap: 15px; /* Increase the gap to add space between buttons */
+  gap: 15px; 
 }
 
 /* Button Styles */
@@ -57,7 +57,7 @@ button {
   cursor: pointer;
   font-size: 14px;
   transition: background-color 0.3s ease, transform 0.2s ease;
-  margin: 0; /* Reset margin to avoid extra spacing */
+  margin: 0; 
 }
 
 
@@ -116,8 +116,12 @@ button.toggle-variants-button:hover {
 .discount-section {
   display: flex;
   gap: 10px;
+
   align-items: center;
   margin-top: 15px;
+}
+.discount-section select {
+  height: 38px;
 }
 
 /* Input Styles */
@@ -188,7 +192,6 @@ select:focus {
   padding: 12px;
   border: 1px solid #ccc;
   border-radius: 8px;
-  border: 1px solid red;
   font-size: 14px;
   margin-bottom: 20px;
   transition: border-color 0.3s ease;

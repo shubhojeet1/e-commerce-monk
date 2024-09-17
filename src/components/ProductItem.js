@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import ProductPicker from './ProductPicker';
 
 const ProductItem = ({ product, onUpdateProducts, onRemove, isRemovable, onSelectProductClick }) => {
     const [showVariants, setShowVariants] = useState(false);
@@ -19,7 +18,7 @@ const ProductItem = ({ product, onUpdateProducts, onRemove, isRemovable, onSelec
 
     const handleDiscountChange = (e) => {
         let value = e.target.value;
-        // Allow only numbers and decimals in the input and limit the value to 100
+      
         if (value === '' || (/^\d*\.?\d*$/.test(value) && parseFloat(value) <= 100)) {
             setDiscountValue(value);
         }
@@ -70,7 +69,7 @@ const ProductItem = ({ product, onUpdateProducts, onRemove, isRemovable, onSelec
                         placeholder="Discount value"
                         value={discountValue}
                         onChange={handleDiscountChange}
-                        max="100" // Ensure the maximum value is 100
+                        max="100"
                     />
                 </div>
             )}
@@ -95,7 +94,7 @@ const ProductItem = ({ product, onUpdateProducts, onRemove, isRemovable, onSelec
                                     placeholder="Discount value"
                                     value={variantDiscounts[index].discountValue}
                                     onChange={(e) => handleVariantDiscountChange(index, 'discountValue', e.target.value)}
-                                    max="100" // Ensure the maximum value is 100
+                                    max="100" 
                                 />
                             </div>
                         </div>
