@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import ProductItem from './ProductItem';
@@ -12,9 +13,10 @@ const ProductList = ({ products, setProducts }) => {
             id: Date.now(),
             title: 'Select Product',
             variants: [],
-            isPlaceholder: true 
+            isPlaceholder: true,
         };
-        setProducts([...products, newPlaceholderProduct]);
+
+        setProducts((prevProducts) => Array.isArray(prevProducts) ? [...prevProducts, newPlaceholderProduct] : [newPlaceholderProduct]);
     };
 
     const handleSelectProductClick = (index) => {
@@ -23,35 +25,53 @@ const ProductList = ({ products, setProducts }) => {
     };
 
     const handleAddNewProduct = (selectedProducts) => {
-        const newProductsList = [...products];
-        newProductsList.splice(currentProductIndex, 1, ...selectedProducts);
-        setProducts(newProductsList);
+        const productsToAdd = Array.isArray(selectedProducts) ? selectedProducts : [selectedProducts];
+
+        setProducts((prevProducts) => {
+            const newProductsList = Array.isArray(prevProducts) ? [...prevProducts] : [];
+            newProductsList.splice(currentProductIndex, 1, ...productsToAdd);
+            return newProductsList;
+        });
+
         setPickerOpen(false);
         setCurrentProductIndex(null);
     };
 
+ 
+    const handleUpdateProduct = (updatedProduct) => {
+        setProducts((prevProducts) => {
+            if (!Array.isArray(prevProducts)) return prevProducts;
+            return prevProducts.map((product) =>
+                product.id === updatedProduct.id ? updatedProduct : product
+            );
+        });
+    };
+
     const handleDragEnd = (result) => {
-        if (!result.destination) return;
+        if (!result.destination) {
+            return;
+        }
 
-        const reorderedProducts = Array.from(products);
-        const [movedItem] = reorderedProducts.splice(result.source.index, 1);
-        reorderedProducts.splice(result.destination.index, 0, movedItem);
-
-        setProducts(reorderedProducts);
+        setProducts((prevProducts) => {
+            const reorderedProducts = Array.isArray(prevProducts) ? Array.from(prevProducts) : [];
+            const [movedItem] = reorderedProducts.splice(result.source.index, 1);
+            reorderedProducts.splice(result.destination.index, 0, movedItem);
+            return reorderedProducts;
+        });
     };
 
     const handleRemoveProduct = (index) => {
-        const newProductsList = [...products];
-        newProductsList.splice(index, 1);
-        setProducts(newProductsList);
+        setProducts((prevProducts) => {
+            const newProductsList = Array.isArray(prevProducts) ? [...prevProducts] : [];
+            newProductsList.splice(index, 1);
+            return newProductsList;
+        });
     };
 
     return (
         <div className="product-list">
-            {/* Add Product Button */}
             <button className="add-product-button" onClick={handleAddPlaceholderProduct}>Add Product</button>
 
-            {/* ProductPicker Modal for selecting a product */}
             {isPickerOpen && (
                 <ProductPicker
                     setPickerOpen={setPickerOpen}
@@ -63,7 +83,7 @@ const ProductList = ({ products, setProducts }) => {
                 <Droppable droppableId="products">
                     {(provided) => (
                         <div {...provided.droppableProps} ref={provided.innerRef}>
-                            {products.map((product, index) => (
+                            {Array.isArray(products) && products.map((product, index) => (
                                 <Draggable key={product.id} draggableId={product.id.toString()} index={index}>
                                     {(provided) => (
                                         <div
@@ -74,9 +94,7 @@ const ProductList = ({ products, setProducts }) => {
                                             <ProductItem
                                                 product={product}
                                                 index={index}
-                                                onUpdateProducts={(updatedProducts) =>
-                                                    handleAddNewProduct(updatedProducts)
-                                                }
+                                                onUpdateProducts={handleUpdateProduct} 
                                                 onRemove={() => handleRemoveProduct(index)}
                                                 isRemovable={products.length > 1}
                                                 onSelectProductClick={() => handleSelectProductClick(index)}

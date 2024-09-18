@@ -1,8 +1,8 @@
 
 import axios from 'axios';
+const API_URL = process.env.REACT_APP_API_URL;
+const API_KEY = process.env.REACT_APP_API_KEY;
 
-const API_URL = 'https://stageapi.monkcommerce.app/task/products/search';
-const API_KEY = '72njgfa948d9aS7gs5';
 
 export const fetchProducts = async (search = '', page = 0, limit = 10) => {
     try {

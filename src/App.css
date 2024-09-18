@@ -149,14 +149,16 @@ select:focus {
 }
 
 .variant-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 12px;
-  margin-top: 10px;
-  background-color: #ffffff;
-  border-radius: 8px;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+  padding: 10px;
+  margin: 5px 0;
+  border: 1px solid #ccc;
+  background-color: #f9f9f9;
+  cursor: grab;
+}
+
+.variant-item:active {
+  cursor: grabbing;
+  opacity: 0.8;
 }
 
 /* Modal Styles */
@@ -277,4 +279,27 @@ select:focus {
   bottom: 0;
   background: rgba(0, 0, 0, 0.5);
   z-index: 999;
+}
+
+.discount-section {
+  margin-top: 10px;
+}
+
+.discount-controls {
+  display: flex;
+  align-items: center;
+}
+
+.dots-image {
+
+  margin-right: 10px;
+}
+
+.discount-inputs {
+  display: flex;
+  gap: 10px;
+}
+
+.variant-item {
+  margin-top: 10px;
 }
