@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+
+import React, { useState, useEffect } from 'react';
 import dots from '../assets/dots.png';
 import {
   DndContext,
@@ -12,7 +13,7 @@ import {
   SortableContext,
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
-import SortableItem from './SortableItem';
+import SortableItem from './SortableItem'; 
 
 const ProductItem = ({
   product,
@@ -25,35 +26,41 @@ const ProductItem = ({
   const [discountType, setDiscountType] = useState('percentage');
   const [discountValue, setDiscountValue] = useState('');
   const [variantDiscounts, setVariantDiscounts] = useState(
-    Array.isArray(product.variants) ? product.variants.map(() => ({ discountType: 'percentage', discountValue: '' })) : []
+    Array.isArray(product.variants)
+      ? product.variants.map(() => ({ discountType: 'percentage', discountValue: '' }))
+      : []
   );
 
- 
+
   const [variantOrder, setVariantOrder] = useState(
     Array.isArray(product.variants) ? product.variants.map((variant) => variant.id) : []
   );
 
- 
+
   const sensors = useSensors(useSensor(PointerSensor));
 
-
+ 
   const handleDragEnd = (event) => {
     const { active, over } = event;
 
     if (active.id !== over.id) {
-        const oldIndex = variantOrder.indexOf(active.id);
-        const newIndex = variantOrder.indexOf(over.id);
-        const newOrder = arrayMove(variantOrder, oldIndex, newIndex);
-        setVariantOrder(newOrder);
+      const oldIndex = variantOrder.indexOf(active.id);
+      const newIndex = variantOrder.indexOf(over.id);
+      const newOrder = arrayMove(variantOrder, oldIndex, newIndex);
+      setVariantOrder(newOrder);
 
-        
-        const newVariants = Array.isArray(product.variants)
-            ? newOrder.map((id) => product.variants.find((v) => v.id === id)).filter(Boolean)
-            : [];
+     
+      const newVariantDiscounts = arrayMove(variantDiscounts, oldIndex, newIndex);
+      setVariantDiscounts(newVariantDiscounts);
 
-        if (onUpdateProducts && Array.isArray(newVariants)) {
-            onUpdateProducts({ ...product, variants: newVariants });
-        }
+
+      const newVariants = Array.isArray(product.variants)
+        ? newOrder.map((id) => product.variants.find((v) => v.id === id)).filter(Boolean) 
+        : [];
+
+      if (onUpdateProducts && Array.isArray(newVariants)) {
+        onUpdateProducts({ ...product, variants: newVariants });
+      }
     }
   };
 
@@ -78,12 +85,30 @@ const ProductItem = ({
   };
 
   const handleVariantDiscountChange = (index, field, value) => {
-    if (field === 'discountValue' && (value === '' || (/^\d*\.?\d*$/.test(value) && parseFloat(value) <= 100))) {
+    if (
+      (field === 'discountValue' && (value === '' || (/^\d*\.?\d*$/.test(value) && parseFloat(value) <= 100))) ||
+      field === 'discountType'
+    ) {
       const updatedVariantDiscounts = Array.isArray(variantDiscounts) ? [...variantDiscounts] : [];
+      if (!updatedVariantDiscounts[index]) {
+        updatedVariantDiscounts[index] = { discountType: 'percentage', discountValue: '' };
+      }
       updatedVariantDiscounts[index][field] = value;
       setVariantDiscounts(updatedVariantDiscounts);
     }
   };
+
+
+  useEffect(() => {
+    if (Array.isArray(product.variants)) {
+     
+      if (variantOrder.length !== product.variants.length) {
+        setVariantDiscounts(
+          product.variants.map(() => ({ discountType: 'percentage', discountValue: '' }))
+        );
+      }
+    }
+  }, [product.variants, variantOrder.length]);
 
   return (
     <div className="product-item">
@@ -95,7 +120,9 @@ const ProductItem = ({
         <div className="product-item-header">
           <span>{product.title}</span>
           <div className="product-actions">
-            <button className="edit-button" onClick={handleEditClick}>Edit</button>
+            <button className="edit-button" onClick={handleEditClick}>
+              Edit
+            </button>
             {Array.isArray(product.variants) && product.variants.length > 1 && (
               <button className="toggle-variants-button" onClick={handleToggleVariants}>
                 {showVariants ? 'Hide Variants' : 'Show Variants'}
@@ -135,8 +162,8 @@ const ProductItem = ({
             <div className="variant-list">
               {variantOrder.map((variantId, index) => {
                 const variant = Array.isArray(product.variants) ? product.variants.find((v) => v.id === variantId) : null;
-                if (!variant) return null;
-                
+                if (!variant) return null; 
+
                 return (
                   <SortableItem key={variant.id} id={variant.id}>
                     <div className="variant-item">
