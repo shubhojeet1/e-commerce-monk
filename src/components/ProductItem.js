@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import dots from '../assets/dots.png';
 import {
@@ -36,33 +35,39 @@ const ProductItem = ({
     Array.isArray(product.variants) ? product.variants.map((variant) => variant.id) : []
   );
 
-
   const sensors = useSensors(useSensor(PointerSensor));
 
- 
   const handleDragEnd = (event) => {
     const { active, over } = event;
 
-    if (active.id !== over.id) {
-      const oldIndex = variantOrder.indexOf(active.id);
-      const newIndex = variantOrder.indexOf(over.id);
-      const newOrder = arrayMove(variantOrder, oldIndex, newIndex);
-      setVariantOrder(newOrder);
 
-     
-      const newVariantDiscounts = arrayMove(variantDiscounts, oldIndex, newIndex);
-      setVariantDiscounts(newVariantDiscounts);
+    if (!over || active.id === over.id) {
+        return; 
+    }
 
+    const oldIndex = variantOrder.indexOf(active.id);
+    const newIndex = variantOrder.indexOf(over.id);
 
-      const newVariants = Array.isArray(product.variants)
-        ? newOrder.map((id) => product.variants.find((v) => v.id === id)).filter(Boolean) 
+   
+    if (oldIndex === -1 || newIndex === -1) {
+        return; 
+    }
+
+    const newOrder = arrayMove(variantOrder, oldIndex, newIndex);
+    setVariantOrder(newOrder);
+
+    const newVariantDiscounts = arrayMove(variantDiscounts, oldIndex, newIndex);
+    setVariantDiscounts(newVariantDiscounts);
+
+    const newVariants = Array.isArray(product.variants)
+        ? newOrder.map((id) => product.variants.find((v) => v.id === id)).filter(Boolean)
         : [];
 
-      if (onUpdateProducts && Array.isArray(newVariants)) {
+    if (onUpdateProducts && Array.isArray(newVariants)) {
         onUpdateProducts({ ...product, variants: newVariants });
-      }
     }
-  };
+};
+
 
   const handleEditClick = () => {
     onSelectProductClick();
@@ -85,23 +90,26 @@ const ProductItem = ({
   };
 
   const handleVariantDiscountChange = (index, field, value) => {
-    if (
-      (field === 'discountValue' && (value === '' || (/^\d*\.?\d*$/.test(value) && parseFloat(value) <= 100))) ||
-      field === 'discountType'
-    ) {
-      const updatedVariantDiscounts = Array.isArray(variantDiscounts) ? [...variantDiscounts] : [];
-      if (!updatedVariantDiscounts[index]) {
-        updatedVariantDiscounts[index] = { discountType: 'percentage', discountValue: '' };
+    
+    setVariantDiscounts((prevDiscounts) => {
+      const updatedDiscounts = [...prevDiscounts];
+  
+   
+      if (!updatedDiscounts[index]) {
+        updatedDiscounts[index] = { discountType: 'percentage', discountValue: '' };
       }
-      updatedVariantDiscounts[index][field] = value;
-      setVariantDiscounts(updatedVariantDiscounts);
-    }
+  
+    
+      updatedDiscounts[index][field] = value;
+  
+      console.log('Updated Discounts:', updatedDiscounts); 
+      return updatedDiscounts;
+    });
   };
-
+  
 
   useEffect(() => {
     if (Array.isArray(product.variants)) {
-     
       if (variantOrder.length !== product.variants.length) {
         setVariantDiscounts(
           product.variants.map(() => ({ discountType: 'percentage', discountValue: '' }))
@@ -189,7 +197,8 @@ const ProductItem = ({
                               onChange={(e) =>
                                 handleVariantDiscountChange(index, 'discountValue', e.target.value)
                               }
-                              max="100"
+                            min="0"
+                            max="100"
                             />
                           </div>
                         </div>
